@@ -12,7 +12,7 @@ function App() {
       <AppBar position="static" color="default">
         <Toolbar>
            <Typography variant="h6" color="inherit">
-            Gradebook
+            Gradebook Proj
            </Typography>
         </Toolbar>
       </AppBar>
