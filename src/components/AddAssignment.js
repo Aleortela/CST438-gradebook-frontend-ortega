@@ -89,5 +89,4 @@ const AddAssignment = (props) => {
     </div>
     );
 }
-
 export default AddAssignment;
