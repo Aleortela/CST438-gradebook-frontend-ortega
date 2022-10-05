@@ -1,5 +1,6 @@
+
 import './App.css';
-import AddAssignment from './AddAssignment';
+import AddAssignment from './components/AddAssignment';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -31,8 +32,9 @@ function App() {
         <Route exact path='/' component={Assignment} />
         <Route path='/gradebook' component={Gradebook} />
        </Switch>
+       <AddAssignment addAssignment={addAssignment}/>
       </BrowserRouter>       
-      <AddAssignment addAssignment={addAssignment} />
+      
     </div>
   );
 }

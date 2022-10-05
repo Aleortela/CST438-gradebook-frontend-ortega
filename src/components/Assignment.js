@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 import Button from '@mui/material/Button';
 import Radio from '@mui/material/Radio';
 import {DataGrid} from '@mui/x-data-grid';
-import {SERVER_URL} from '../constants.js'
+import {SERVER_URL} from '../constants.js';
 
 // NOTE:  for OAuth security, http request must have
 //   credentials: 'include' 
@@ -32,6 +32,7 @@ class Assignment extends React.Component {
       } )
     .then((response) => response.json()) 
     .then((responseData) => { 
+      console.log(responseData);
       if (Array.isArray(responseData.assignments)) {
         //  add to each assignment an "id"  This is required by DataGrid  "id" is the row index in the data grid table 
         this.setState({ assignments: responseData.assignments.map((assignment, index) => ( { id: index, ...assignment } )) });
@@ -48,7 +49,6 @@ class Assignment extends React.Component {
     console.log("Assignment.onRadioClick " + event.target.value);
     this.setState({selected: event.target.value});
   }
-  
   render() {
      const columns = [
       {
@@ -58,7 +58,7 @@ class Assignment extends React.Component {
         renderCell: (params) => (
           <div>
           <Radio
-            checked={params.row.id == this.state.selected}
+            checked={params.row.id === this.state.selected}
             onChange={this.onRadioClick}
             value={params.row.id}
             color="default"
