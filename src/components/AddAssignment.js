@@ -8,7 +8,6 @@ import DialogTitle from '@mui/material/DialogTitle'
 import {SERVER_URL} from '../constants.js';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
-import Assignment from './Assignment.js';
 
 
 const AddAssignment = (props) => {
@@ -51,7 +50,7 @@ const AddAssignment = (props) => {
                 toast.success("Assignment added successfully!", {
                 position: toast.POSITION.BOTTOM_LEFT
             });
-        
+            fetchAssignments();
             handleClose();
             }
             else{
@@ -67,6 +66,32 @@ const AddAssignment = (props) => {
             handleClose();
             console.log(err);
         })
+      }
+
+      const fetchAssignments = () => {
+        console.log("Assignment.fetchAssignments");
+        const token = Cookies.get('XSRF-TOKEN');
+        fetch(`${SERVER_URL}/gradebook`, 
+          {  
+            method: 'GET', 
+            headers: { 'X-XSRF-TOKEN': token }
+          } )
+        .then((response) => response.json()) 
+        .then((responseData) => { 
+          console.log(responseData);
+          if (Array.isArray(responseData.assignments)) {
+            toast.success("Fetch assignments succesfull", {
+              position: toast.POSITION.BOTTOM_LEFT
+            });
+            //  add to each assignment an "id"  This is required by DataGrid  "id" is the row index in the data grid table 
+            this.setState({ assignments: responseData.assignments.map((assignment, index) => ( { id: index, ...assignment } )) });
+          } else {
+            toast.error("Fetch failed.", {
+              position: toast.POSITION.BOTTOM_LEFT
+            });
+          }        
+        })
+        .catch(err => console.error(err)); 
       }
 
     return(
