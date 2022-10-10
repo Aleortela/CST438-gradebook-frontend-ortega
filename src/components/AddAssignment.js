@@ -7,13 +7,14 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle'
 import {SERVER_URL} from '../constants.js';
 import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
 
 
 const AddAssignment = (props) => {
 
     const [open, setOpen] = React.useState(false);
 
-    const [assignment, setAssignment] = React.useState({name: '', dueDate: ''});
+    const [assignment, setAssignment] = React.useState({name: '', dueDate: '', courseId:''});
 
     const handleOpen = () => {
         setOpen(true);
@@ -30,7 +31,7 @@ const AddAssignment = (props) => {
 
     const addAssignment = () => {
         
-        console.log(JSON.stringify({name: assignment.name, dueDate: assignment.dueDate}));
+        console.log(JSON.stringify({name: assignment.name, dueDate: assignment.dueDate, courseId: assignment.courseId}));
         fetch(`${SERVER_URL}/add`,
         {
           method:"POST",
@@ -40,7 +41,8 @@ const AddAssignment = (props) => {
             },
           body: JSON.stringify({
             name: assignment.name,
-            dueDate: assignment.dueDate
+            dueDate: assignment.dueDate,
+            courseId: assignment.courseId
             })
         })
         .then(res =>{
@@ -48,6 +50,7 @@ const AddAssignment = (props) => {
                 toast.success("Assignment added successfully!", {
                 position: toast.POSITION.BOTTOM_LEFT
             });
+            fetchAssignments();
             handleClose();
             }
             else{
@@ -65,6 +68,32 @@ const AddAssignment = (props) => {
         })
       }
 
+      const fetchAssignments = () => {
+        console.log("Assignment.fetchAssignments");
+        const token = Cookies.get('XSRF-TOKEN');
+        fetch(`${SERVER_URL}/gradebook`, 
+          {  
+            method: 'GET', 
+            headers: { 'X-XSRF-TOKEN': token }
+          } )
+        .then((response) => response.json()) 
+        .then((responseData) => { 
+          console.log(responseData);
+          if (Array.isArray(responseData.assignments)) {
+            toast.success("Fetch assignments succesfull", {
+              position: toast.POSITION.BOTTOM_LEFT
+            });
+            //  add to each assignment an "id"  This is required by DataGrid  "id" is the row index in the data grid table 
+            this.setState({ assignments: responseData.assignments.map((assignment, index) => ( { id: index, ...assignment } )) });
+          } else {
+            toast.error("Fetch failed.", {
+              position: toast.POSITION.BOTTOM_LEFT
+            });
+          }        
+        })
+        .catch(err => console.error(err)); 
+      }
+
     return(
     <div>
         <Button style={{marginTop:10}} variant="outlined" color="primary" onClick={handleOpen}>
@@ -74,7 +103,9 @@ const AddAssignment = (props) => {
             <DialogTitle id="form-dialog-title">New Assignment</DialogTitle>
             <DialogContent>
                 <TextField autoFocus value={assignment.name} margin="dense" onChange={handleChange} name="name" label="Title" fullWidth />
-                <TextField autoFocus margin="dense" onChange={handleChange} name="dueDate" label="Due Date" fullWidth />
+                <TextField autoFocus value={assignment.dueDate} margin="dense" onChange={handleChange} name="dueDate" label="Due Date" fullWidth />
+                <TextField autoFocus value={assignment.courseId} margin="dense" onChange={handleChange} name="courseId" label="Course ID" fullWidth />
+                
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="primary">
@@ -89,5 +120,4 @@ const AddAssignment = (props) => {
     </div>
     );
 }
-
 export default AddAssignment;
