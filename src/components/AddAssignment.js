@@ -48,19 +48,20 @@ const AddAssignment = (props) => {
         .then(res =>{
             if(res.ok){
                 toast.success("Assignment added successfully!", {
-                position: toast.POSITION.BOTTOM_LEFT
+                position: toast.POSITION.BOTTOM_LEFT,
+                autoClose: 15000 
             });
             fetchAssignments();
             handleClose();
             }
             else{
-                toast.error("Fetch error", {
+                toast.error("Add error", {
                     position: toast.POSITION.BOTTOM_LEFT
                 });
                 handleClose();
             }})
         .catch(err => {
-            toast.error("Fetch failed.", {
+            toast.error("Add failed.", {
               position: toast.POSITION.BOTTOM_LEFT
             });
             handleClose();
@@ -80,7 +81,7 @@ const AddAssignment = (props) => {
         .then((responseData) => { 
           console.log(responseData);
           if (Array.isArray(responseData.assignments)) {
-            toast.success("Fetch assignments succesfull", {
+            toast.success("Fetch assignments successful", {
               position: toast.POSITION.BOTTOM_LEFT
             });
             //  add to each assignment an "id"  This is required by DataGrid  "id" is the row index in the data grid table 
@@ -96,22 +97,22 @@ const AddAssignment = (props) => {
 
     return(
     <div>
-        <Button style={{marginTop:10}} variant="outlined" color="primary" onClick={handleOpen}>
+        <Button id="add" style={{marginTop:10}} variant="outlined" color="primary" onClick={handleOpen}>
             Add Assignment</Button>
 
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">New Assignment</DialogTitle>
             <DialogContent>
-                <TextField autoFocus value={assignment.name} margin="dense" onChange={handleChange} name="name" label="Title" fullWidth />
-                <TextField autoFocus value={assignment.dueDate} margin="dense" onChange={handleChange} name="dueDate" label="Due Date" fullWidth />
-                <TextField autoFocus value={assignment.courseId} margin="dense" onChange={handleChange} name="courseId" label="Course ID" fullWidth />
+                <TextField id="name" autoFocus value={assignment.name} margin="dense" onChange={handleChange} name="name" label="Title" fullWidth />
+                <TextField id="dueDate" autoFocus value={assignment.dueDate} margin="dense" onChange={handleChange} name="dueDate" label="Due Date" fullWidth />
+                <TextField id="courseId" npmautoFocus value={assignment.courseId} margin="dense" onChange={handleChange} name="courseId" label="Course ID" fullWidth />
                 
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="primary">
                     Cancel
                 </Button>
-                <Button onClick={addAssignment} color="primary">
+                <Button id="dialogAdd" onClick={addAssignment} color="primary">
                     Add
                 </Button>
             </DialogActions>
